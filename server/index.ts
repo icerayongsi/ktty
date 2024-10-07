@@ -5,7 +5,7 @@ import { staticPlugin } from "@elysiajs/static";
 import swagger from "@elysiajs/swagger";
 
 import logger from "./logger";
-import userController from "./api/users.controller";
+import routes from "./api/controllers/routes";
 
 const port = process.env.PORT ?? 3000;
 const app = new Elysia()
@@ -31,15 +31,14 @@ const app = new Elysia()
   })
   .onRequest(({ request }) => {
     logger.info(`Incoming request: ${request.method} ${request.url}`);
-  })
+  });
 
-  .use(userController)
+routes.forEach(controller => {
+  app.use(controller);
+});
 
-  .listen(port);
+app.listen(port);
 
 logger.info(
   `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,
 );
-
-export { app };
-export type App = typeof app;
