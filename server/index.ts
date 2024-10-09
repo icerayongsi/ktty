@@ -6,8 +6,9 @@ import swagger from "@elysiajs/swagger";
 
 import logger from "./logger";
 import routes from "./api/controllers/routes";
+import DatabaseContext from "./repositories/applicationDbContext";
 
-const port = process.env.PORT ?? 3000;
+const port = process.env.SERVER_PORT ? +process.env.SERVER_PORT : 3000;
 const app = new Elysia()
   .use(staticPlugin())
   .use(cors())
@@ -37,7 +38,11 @@ routes.forEach(controller => {
   app.use(controller);
 });
 
+const prisma = DatabaseContext.getInstance();
+
 app.listen(port);
+
+
 
 logger.info(
   `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,

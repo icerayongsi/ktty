@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import DatabaseContext from "../../repositories/applicationDbContext";
 
 const userController = new Elysia({ prefix: "/users" })
   .get("/", () => {
@@ -44,6 +45,9 @@ const userController = new Elysia({ prefix: "/users" })
       description: "Create a new user",
       tags: ["Users"],
     },
+  })
+  .post("/create" ,() => {
+    
   });
 
 export default userController;
