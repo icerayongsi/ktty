@@ -38,10 +38,9 @@ routes.forEach(controller => {
   app.use(controller);
 });
 
-const prisma = DatabaseContext.getInstance();
+DatabaseContext.getInstance();
 
 app.listen(port);
-
 
 
 logger.info(

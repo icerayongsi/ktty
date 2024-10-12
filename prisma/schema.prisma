@@ -8,28 +8,31 @@ generator client {
   binaryTargets = ["native", "debian-openssl-3.0.x", "linux-arm64-openssl-1.1.x", "rhel-openssl-1.0.x"]
 }
 
-model User {
-  id           String    @id @unique
+generator prismabox {
+  provider = "prismabox"
+  output = "../models"
+  typeboxImportVariableName = "t"
+  typeboxImportDependencyName = "elysia"
+  additionalProperties = true
+  inputModel = true
+}
 
-  auth_session Session[]
-  key          Key[]
+model User {
+    id         String     @id
+    sessions   Session[]
+    passwords  Password[]
+}
+
+model Password {
+    id             Int    @id @default(autoincrement())
+    hashedPassword String
+    userId         String
+    user           User   @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Session {
-  id             String @id @unique
-  user_id        String
-  active_expires BigInt
-  idle_expires   BigInt
-  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
-
-  @@index([user_id])
-}
-
-model Key {
-  id              String  @id @unique
-  hashed_password String?
-  user_id         String
-  user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
-
-  @@index([user_id])
+    id        String   @id
+    userId    String
+    expiresAt DateTime
+    user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
