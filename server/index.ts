@@ -25,6 +25,32 @@ const app = new Elysia()
       ],
     },
   }))
+  .ws('/notify/:hid', {
+    // body: t.Object({
+    //   message: t.String()
+    // }),
+    params: t.Object({
+      hid : t.String()
+    }),
+    open(ws) {
+      const hid = ws.data.params.hid;
+
+      logger.info(`[WS] Device '${hid}' is connected`)
+      ws.subscribe(`device/${hid}`)
+    },
+    message(ws, message) {
+      const hid = ws.data.params.hid;
+      
+      logger.info(`[WS] Received message form ${hid} :${message} `)
+      ws.publish(`device/${hid}`,message)
+      ws.send(message)
+    },
+    close(ws) {
+      const hid = ws.data.params.hid;
+      logger.info(`[WS] Device '${hid}' disconnected`);
+      ws.unsubscribe(`device/${hid}`);
+    }
+  })
   .onError(({ code, error, set }) => {
     logger.error(`Error ${code}: ${error.message}`);
     set.status = code === 'NOT_FOUND' ? 404 : 500;
