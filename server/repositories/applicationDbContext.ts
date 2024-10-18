@@ -39,7 +39,7 @@ declare module "lucia" {
 		Lucia: typeof Lucia;
 		DatabaseUserAttributes: DatabaseUserAttributes;
 	}
-}
+} 
 
 interface DatabaseUserAttributes {
 	username: string;
